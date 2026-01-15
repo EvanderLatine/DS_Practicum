@@ -14,6 +14,8 @@ dependencies:
   - jupyterlab
   - jupyterlab_server
   - requests
+  - shap
+  - phik
   - nest-asyncio
   - python=3.9
   - pip:
