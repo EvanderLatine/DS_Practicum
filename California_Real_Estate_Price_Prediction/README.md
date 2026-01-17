@@ -63,14 +63,22 @@ jupyter nbconvert --to notebook --execute notebook.ipynb
 
 ### Data Preprocessing
 
-1. **Missing Values:** 207 null values in `total_bedrooms` filled with median (433.0)
+1. **Missing Values:** 207 null values in `total_bedrooms` handled via `Imputer` inside Pipeline (median strategy, computed only on training data to prevent data leakage)
 2. **Categorical Encoding:** `ocean_proximity` transformed via StringIndexer + OneHotEncoder
 3. **Feature Scaling:** StandardScaler applied to numerical features (z-score normalization)
 
-### Feature Engineering Pipeline
+**Important:** All preprocessing steps are performed AFTER train/test split and are fitted only on training data to avoid data leakage.
 
+### Pipeline Architecture
+
+**Model 1 Pipeline (all features):**
 ```
-StringIndexer → OneHotEncoder → VectorAssembler → StandardScaler
+Imputer → StringIndexer → OneHotEncoder → VectorAssembler → StandardScaler → VectorAssembler → LinearRegression
+```
+
+**Model 2 Pipeline (numerical only):**
+```
+Imputer → VectorAssembler → StandardScaler → LinearRegression
 ```
 
 **Feature vectors:**
@@ -79,8 +87,8 @@ StringIndexer → OneHotEncoder → VectorAssembler → StandardScaler
 
 ### Model Training
 
-- **Algorithm:** Linear Regression (PySpark MLlib)
-- **Train/Test Split:** 80/20 with seed=42
+- **Algorithm:** Linear Regression (PySpark MLlib) with L2 regularization (regParam=0.01)
+- **Train/Test Split:** 80/20 with seed=42 (performed BEFORE preprocessing)
 - **Training samples:** 16,560
 - **Test samples:** 4,080
 
@@ -104,9 +112,9 @@ StringIndexer → OneHotEncoder → VectorAssembler → StandardScaler
    - Log-transform skewed features
    - Add polynomial features
 
-2. **Regularization:**
-   - Apply Ridge (L2) or Lasso (L1) regularization
-   - Use ElasticNet (L1 + L2 combination)
+2. **Hyperparameter Tuning:**
+   - Use CrossValidator to optimize `regParam` and `elasticNetParam`
+   - Experiment with Lasso (L1) or ElasticNet (L1 + L2) regularization
 
 3. **Alternative Algorithms:**
    - Gradient Boosted Trees (GBTRegressor)
