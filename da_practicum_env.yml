@@ -15,6 +15,10 @@ dependencies:
   - jupyterlab_server
   - requests
   - nest-asyncio
+  - openjdk=17
+  - pyarrow
+  - findspark
+  - pyspark
   - python=3.9
   - pip:
     - beautifulsoup4==4.9.3
