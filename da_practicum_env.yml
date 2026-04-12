@@ -19,6 +19,7 @@ dependencies:
   - pyarrow
   - findspark
   - pyspark
+  - torch
   - python=3.9
   - pip:
     - beautifulsoup4==4.9.3
