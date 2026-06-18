@@ -17,6 +17,8 @@ dependencies:
   - nest-asyncio
   - openjdk=17
   - pyarrow
+  - transformers
+  - tqdm
   - findspark
   - pyspark
   - torch
